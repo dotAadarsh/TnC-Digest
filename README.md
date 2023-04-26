@@ -56,7 +56,7 @@ In our case, I have gathered the publisher, title, and, description from the giv
 
 ![Courier Email Response](./assets/TnC-Digest-Email-Response.png)
 
-![Streamlit App Response]()
+![Streamlit App Response](./assets/TnC-Digest-Streamlit.png)
 
 ### Future Scope
 I think go to another app is not that good. It is better if we have a **Chrome Extension**. When a user click on the extension it automatically generates key points and also sends those to the respective user to know what they are signing up for.
@@ -66,5 +66,5 @@ I think go to another app is not that good. It is better if we have a **Chrome E
 - [AI21 Labs - Text Segmentation API](https://docs.ai21.com/docs/text-segmentation-api)
 - [Microlink API: Overview](https://microlink.io/docs/api/getting-started/overview)
 
-### Contibute
+### Contribute
 Create an issue/Open a Pull Request. I am open for collaboration and stuff. You can find me on twitter [@dotAadarsh](https://twitter.com/dotAadarsh)
