@@ -4,8 +4,8 @@ from trycourier import Courier
 import ai21
 
 # Set up API keys for ai21 labs and Courier
-ai21.api_key = AI21_API_KEY = st.secrets['AI21_API_KEY']
-COURIER_AUTH_TOKEN = st.secrets['COURIER_AUTH_TOKEN']
+ai21.api_key = AI21_API_KEY = st.secrets['AI21_API_KEY ']
+COURIER_AUTH_TOKEN = st.secrets['COURIER_AUTH_TOKEN ']
 
 # Configures the default settings of the page
 st.set_page_config(
@@ -20,6 +20,17 @@ st.set_page_config(
         }
     )
 
+def get_metadata(input_url):
+    url = 'https://api.microlink.io'
+    params = {'url': f'{input_url}', 'meta': True}
+
+    response = requests.get(url, params)
+    result = response.json()
+    title = result['data']['title']
+    description = result['data']['description']
+    publisher = result['data']['publisher']
+
+    return title, description, publisher
 
 @st.cache_data
 def segment(input_url):
@@ -90,27 +101,33 @@ def summarize(segmented_text):
 
 
 # Define a function to send an email using Courier API
-def send_email(summary, recipient_email):
+def send_email(key_points, recipient_email, title, description, publisher):
 
-    client = Courier(auth_token=COURIER_AUTH_TOKEN) #or set via COURIER_AUTH_TOKEN env var
+    url = "https://api.courier.com/send"
 
-    resp = client.send_message(
-    message={
-        'to': {
-        'email': 'aadarshkannan111@gmail.com',
-        'data': {'name': 'Aadarsh'}
+    payload = {
+    "message": {
+        "template": "NG0YGY4T0G4B42NWNW5NZZADR0ZK",
+        "data": {
+        "title": title,
+        "key_points": key_points,
+        "publisher": publisher,
+        "description": description,
         },
-        'content': {
-        'title': 'TnC Digest',
-        'body': f'{summary}',
-        },
-        'routing': {
-        'method': 'single',
-        'channels': ['email'],
+        "to": {
+        "email": recipient_email
         }
     }
-    )
-    print(resp['requestId']) # Request ID - For Devs
+    }
+    headers = {
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+    "Authorization": f"Bearer {COURIER_AUTH_TOKEN}"
+    }
+
+    response = requests.request("POST", url, json=payload, headers=headers)
+
+    print(response.text)
 
 # Define the Streamlit app
 def main():
@@ -134,19 +151,19 @@ def main():
             Then it uses Courier API to send the result to the desired E-Mail given by the user.
 
         """)
-        
     
-
     st.title('TnC Digest')
     url = st.text_input('Enter the URL of the Terms and Conditions document', 'https://www.courier.com/terms/')
     email = st.text_input('Enter your email address')
 
     if st.button('Generate Summary') and url and email:
-        st.write("Generating")
-        summary = segment(url)
-        if summary:
-            send_email(summary, email)
-            st.write(summary)
+        with st.spinner('Wait for it.../ Once its completed you can check the mail as well'):
+            title, description, publisher = get_metadata(url)
+            summary = segment(url)
+            if summary:
+                send_email(summary, email, title, description, publisher)
+                st.write(summary)
+        st.success('Done!')
 
 if __name__ == '__main__':
     main()
