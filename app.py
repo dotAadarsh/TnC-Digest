@@ -4,8 +4,8 @@ from trycourier import Courier
 import ai21
 
 # Set up API keys for ai21 labs and Courier
-ai21.api_key = AI21_API_KEY = st.secrets['AI21_API_KEY ']
-COURIER_AUTH_TOKEN = st.secrets['COURIER_AUTH_TOKEN ']
+ai21.api_key = AI21_API_KEY = st.secrets['AI21_API_KEY']
+COURIER_AUTH_TOKEN = st.secrets['COURIER_AUTH_TOKEN']
 
 # Configures the default settings of the page
 st.set_page_config(
@@ -150,10 +150,13 @@ def main():
             Initially it segments the texts from the given document URL and send it to AI21 Labs to extract the key points in chunks and ties it up. 
             Then it uses Courier API to send the result to the desired E-Mail given by the user.
 
+            ### Example Links
+            - [Streamlit = Terms of Use](https://streamlit.io/terms-of-use)
+            - [Deepgram - Terms](https://deepgram.com/terms/)
         """)
     
     st.title('TnC Digest')
-    url = st.text_input('Enter the URL of the Terms and Conditions document', 'https://www.courier.com/terms/')
+    url = st.text_input('Enter the URL of the TermsnConditions/Policy document', 'https://www.courier.com/terms/')
     email = st.text_input('Enter your email address')
 
     if st.button('Generate Summary') and url and email:
