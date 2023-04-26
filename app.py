@@ -154,9 +154,10 @@ def main():
             - [Streamlit - Terms of Use](https://streamlit.io/terms-of-use)
             - [Deepgram - Terms](https://deepgram.com/terms/)
         """)
+        st.info("It will not produce for some websites and may cause error. Try using different URL and retry it!")
     
     st.title('TnC Digest')
-    url = st.text_input('Enter the URL of the TermsnConditions/Policy document', 'https://streamlit.io/terms-of-use')
+    url = st.text_input('Enter the URL of the TermsnConditions/Policy document', 'https://deepgram.com/terms/')
     email = st.text_input('Enter your email address')
 
     if st.button('Generate Summary') and url and email:
