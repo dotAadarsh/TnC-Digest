@@ -151,12 +151,12 @@ def main():
             Then it uses Courier API to send the result to the desired E-Mail given by the user.
 
             ### Example Links
-            - [Streamlit = Terms of Use](https://streamlit.io/terms-of-use)
+            - [Streamlit - Terms of Use](https://streamlit.io/terms-of-use)
             - [Deepgram - Terms](https://deepgram.com/terms/)
         """)
     
     st.title('TnC Digest')
-    url = st.text_input('Enter the URL of the TermsnConditions/Policy document', 'https://www.courier.com/terms/')
+    url = st.text_input('Enter the URL of the TermsnConditions/Policy document', 'https://streamlit.io/terms-of-use')
     email = st.text_input('Enter your email address')
 
     if st.button('Generate Summary') and url and email:
