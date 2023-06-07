@@ -1,3 +1,4 @@
 ai21==1.0.5
 streamlit==1.21.0
+itranslate==0.1.2
 trycourier==4.4.0

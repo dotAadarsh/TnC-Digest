@@ -2,10 +2,16 @@ import streamlit as st
 import requests
 from trycourier import Courier
 import ai21
+from itranslate import itranslate as itrans
+
 
 # Set up API keys for ai21 labs and Courier
 ai21.api_key = AI21_API_KEY = st.secrets['AI21_API_KEY']
 COURIER_AUTH_TOKEN = st.secrets['COURIER_AUTH_TOKEN']
+
+languages = {'af': 'afrzkaans', 'sq': 'albanian', 'am': 'amharic', 'ar': 'arabic', 'hy': 'armenian', 'az': 'azerbaijani', 'eu': 'basque', 'be': 'belarusian', 'bn': 'bengali', 'bs': 'bosnian', 'bg': 'bulgarian', 'ca': 'catalan', 'ceb': 'cebuano', 'ny': 'chichewa', 'zh-cn': 'chinese (simplified)', 'zh-tw': 'chinese (traditional)', 'co': 'corsican', 'hr': 'croatian', 'cs': 'czech', 'da': 'danish', 'nl': 'dutch', 'en': 'english', 'eo': 'esperanto', 'et': 'estonian', 'tl': 'filipino', 'fi': 'finnish', 'fr': 'french', 'fy': 'frisian', 'gl': 'galician', 'ka': 'georgian', 'de': 'german', 'el': 'greek', 'gu': 'gujarati', 'ht': 'haitian creole', 'ha': 'hausa', 'haw': 'hawaiian', 'iw': 'hebrew', 'he': 'hebrew', 'hi': 'hindi', 'hmn': 'hmong', 'hu': 'hungarian', 'is': 'icelandic', 'ig': 'igbo', 'id': 'indonesian', 'ga': 'irish', 'it': 'italian', 'ja': 'japanese', 'jw': 'javanese', 'kn': 'kannada', 'kk': 'kazakh', 'km': 'khmer', 'ko': 'korean', 'ku': 'kurdish (kurmanji)',
+ 'ky': 'kyrgyz', 'lo': 'lao', 'la': 'latin', 'lv': 'latvian', 'lt': 'lithuanian', 'lb': 'luxembourgish', 'mk': 'macedonian', 'mg': 'malagasy', 'ms': 'malay', 'ml': 'malayalam', 'mt': 'maltese', 'mi': 'maori', 'mr': 'marathi', 'mn': 'mongolian', 'my': 'myanmar (burmese)', 'ne': 'nepali', 'no': 'norwegian', 'or': 'odia', 'ps': 'pashto', 'fa': 'persian', 'pl': 'polish', 'pt': 'portuguese', 'pa': 'punjabi', 'ro': 'romanian', 'ru': 'russian', 'sm': 'samoan', 'gd': 'scots gaelic', 'sr': 'serbian', 'st': 'sesotho', 'sn': 'shona', 'sd': 'sindhi', 'si': 'sinhala', 'sk': 'slovak', 'sl': 'slovenian', 'so': 'somali', 'es': 'spanish', 'su': 'sundanese', 'sw': 'swahili', 'sv': 'swedish', 'tg': 'tajik', 'ta': 'tamil', 'te': 'telugu', 'th': 'thai', 'tr': 'turkish', 'uk': 'ukrainian', 'ur': 'urdu', 'ug': 'uyghur', 'uz': 'uzbek', 'vi': 'vietnamese', 'cy': 'welsh', 'xh': 'xhosa', 'yi': 'yiddish', 'yo': 'yoruba', 'zu': 'zulu'}
+    
 
 # Configures the default settings of the page
 st.set_page_config(
@@ -99,7 +105,6 @@ def summarize(segmented_text):
     data = response.json()
     return data['completions'][0]["data"]['text']
 
-
 # Define a function to send an email using Courier API
 def send_email(key_points, recipient_email, title, description, publisher):
 
@@ -129,11 +134,18 @@ def send_email(key_points, recipient_email, title, description, publisher):
 
     print(response.text)
 
+
+def translate(summarized_text, to_lang):
+    if summarized_text is not None and to_lang is not None:
+        dest = list(languages.keys())[list(languages.values()).index(to_lang)]
+        st.write("language: ", dest)
+        st.write("Translated Text", itrans(summarized_text, to_lang = dest))
+
 # Define the Streamlit app
 def main():
 
     with st.sidebar:
-        st.write("Created for Courier Hacks: Python Programs")
+        st.write("Created for [Courier Hacks: Python Programs](https://courier-hacks-python-programs.devpost.com/project-gallery)")
         st.header("TnC Digest")
         st.markdown("""
 
@@ -153,12 +165,20 @@ def main():
             ### Example Links
             - [Streamlit - Terms of Use](https://streamlit.io/terms-of-use)
             - [Deepgram - Terms](https://deepgram.com/terms/)
+
+            ### Future plans
+            
+            - [ ] Browser Extension
+            - [ ] Multi format support
         """)
         st.info("It will not produce for some websites and may cause error. Try using different URL and retry it!")
     
     st.title('TnC Digest')
     url = st.text_input('Enter the URL of the TermsnConditions/Policy document', 'https://deepgram.com/terms/')
-    email = st.text_input('Enter your email address')
+    email = st.text_input('Enter your email address, A copy will be sent!')
+    to_translate = st.checkbox("Want to Translate?")
+    if to_translate:
+        to_lang = st.selectbox("Select the language", languages.values())   
 
     if st.button('Generate Summary') and url and email:
         with st.spinner('Wait for it.../ Once its completed you can check the mail as well'):
@@ -167,7 +187,11 @@ def main():
             if summary:
                 send_email(summary, email, title, description, publisher)
                 st.write(summary)
-        st.success('Done!')
+                st.success('Done!')
+                if to_translate:
+                    translate(summary, to_lang)
+    else:
+        st.info("Please enter the above details")
 
 if __name__ == '__main__':
     main()
