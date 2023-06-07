@@ -174,7 +174,7 @@ def main():
         st.info("It will not produce for some websites and may cause error. Try using different URL and retry it!")
     
     st.title('TnC Digest')
-    url = st.text_input('Enter the URL of the TermsnConditions/Policy document', 'https://deepgram.com/terms/')
+    url = st.text_input('Enter the URL of the TermsnConditions/Policy document', placeholder="Use examples from the sidebar or your own")
     email = st.text_input('Enter your email address, A copy will be sent!')
     to_translate = st.checkbox("Want to Translate?")
     if to_translate:
